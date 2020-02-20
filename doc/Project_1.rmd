@@ -1,5 +1,5 @@
 ---
-title: "A data story of Hip-Hop Music"
+title: "A Data Story of Hip-Hop Music"
 author: "Zhiyuan Zhang zz2677"
 date: "2/16/2020"
 output: html_document
@@ -12,21 +12,23 @@ knitr::opts_chunk$set(echo = TRUE)
 <img src = "../figs/eminem.jpg" alt = "alt text" width = "500" align = "middle"/>
 
 ## Part 0: Introduction
-Among all types of genres in music, Hip-Hop is one of the most distinctive in terms of lyrics. Stylized rthmic music with rapping, Hip-Hop is not only a style of music, but also a pactice reflecting the subculture in the whole society and an attitude towards life. Unlike other types of music, the lyrics in the Hip-Hop songs are more like a rhythmic talking, thus it is quite interesting to explore the lyrics of Hip-Hop music deeply by statistical methods. 
+Among all types of genres in music, Hip-Hop is one of the most distinctive in terms of lyrics. Stylized rthmic music with rapping, Hip-Hop is not only a style of music, but also a pactice reflecting the subculture in the whole society and an attitude towards life. Unlike other genres of music, the lyrics in the Hip-Hop songs are more like a rhythmic talking, thus it is quite interesting to explore the lyrics of Hip-Hop music deeply by statistical methods. 
 
-In this project, we will carry out an exploratory data analysis focusing on the lyrics of Hip-Hop music. To be Specifical, we want to answer the following two questions:
+In this project, we will carry out an exploratory data analysis focusing on the lyrics of Hip-Hop music. To be specifical, we want to answer the following three questions:
 
 + What exactly are the Hip-Hop artists singing?
-+ What emotions does hip hop mainly express?
++ What emotions do hip hop mainly express?
 + Have these emotions changed over time?
 
-To approach the answer to these questions, we will apply the following techniques in R:
+To approach the answer to these questions, we will apply the following statistical techniques in R:
 
 + Text Ming and Visualization
 + Sentiment Analysis
 + Topic Modeling
 
 ## Part 1: Load the Related Packages and Data
+
+First and foremost, we loaded the necessary R packages in this project.
 
 ```{r, message=FALSE, warning=FALSE}
 #load the packages
@@ -60,7 +62,7 @@ my_theme <-theme(plot.title = element_text(hjust = 0.5), plot.subtitle = element
 my_color <- c( "#D55E00","#56B4E9",  "#CC79A7", "#009E73","#E69F00")
 ```
 
-We didn't remove some of the dirty words in the text processing, this is becasue there words are important elements in the Hip-Hop lyrics. We load the processed data directly and processed the loaded data again for later use.  Also, we customized the theme and color for the subsequent visualization.
+There are some notes about the data processing. I double checked the removed words and didn't remove some of the dirty words in the text processing. This is becasue there words are important elements in the Hip-Hop lyrics. We load the processed data directly and processed the loaded data again for later use.  Also, we customized the theme and color for the subsequent visualization.
 
 ```{r, message=FALSE, warning=FALSE}
 load('../output/processed_lyrics_rap.RData')
@@ -84,7 +86,7 @@ words_all_count <- words_all %>% count(term, name = "count") %>% arrange(desc(co
 
 
 ## Part 2: Components of Hip-Hop Lyrics
-In this part, we applied some text mining techniques to figure out the first questions: What exactly are the Hip-Hop artists singing? Firstly, we explored the whole Hip-Hop lyrics and draw a word-cloud as well as a top ten popular word bar chart to visualize the frequency of words.
+In this part, we applied some text mining techniques to figure out the first questions: What exactly are the Hip-Hop artists singing? Firstly, we explored the whole Hip-Hop lyrics and draw a word-cloud as well as a top-ten popular word bar chart to visualize the frequency of words.
 
 ```{r, message=FALSE, warning=FALSE}
 wordcloud2(words_all_count[1:300, ], size = 0.8, shape = 'circle',color = "skyblue", backgroundColor="black")
@@ -96,11 +98,11 @@ fig_top_ten <- ggplot(popular_words_top_ten)+geom_col(aes(x = term, y =count), f
 fig_top_ten
 ```
 
-From the word-cloud and the top ten frequency words chart in Hip-Hop songs, it is obverse to find out that Hip-hop lyrics are still full of swear words. This is because Hip-Hop music originated mainly at area full of poverty, violence and crime and the realism is one of the base of Hip-Hop music. This also makes Hip-Hop music difficult to relate with elegant places. However, besides these unsightly words, we can also find that love, life, hope can be seem among the lyrics. Although the rapper are keen on attacking the hardships of the society, they are not yield to fate. The core of the Hip-Hop music is always peace and love.
+From the word-cloud and the top ten frequency words chart in Hip-Hop songs, it is obverse to find out that Hip-hop lyrics are still full of swear words. This is because Hip-Hop music originated mainly from the area full of poverty, violence and crime and the realism is one of the base of Hip-Hop music. This also makes Hip-Hop music difficult to relate with elegant places. However, besides these unsightly words, we can also find that love, life, hope can be seem among the lyrics. Although the rapper are keen on attacking the hardships of the society, they are not yield to fate. The core of the Hip-Hop music is always peace and love.
 
 ## Part 3: A Rapper's Favourite
 This part is for fun. With the analyis of the word frequencey, we can also explore some interesting facts, namely, a rapper's favourite. Since the lyrics in the Hip-Hop songs are like a rhythmic talking, it is also a reflection of reality. What's rappers' favourite car? What do rappers drink? 
-When rapper are high, what drugs are they tend to use. With a list of potential answers, we may find some unexpected facts.
+When rappers are high, what drugs are they tend to use. With a list of potential answers, we may find some unexpected facts.
 
 ```{r, message=FALSE,warning=FALSE }
 car <- c("audi","bmw","bentley","buick", "bugatti","cadillac","chrysler",
@@ -113,7 +115,8 @@ rap_car_top_10 <- rap_car[1:10,] %>% mutate(term = fct_reorder(term, count))
 fig_car <- ggplot(rap_car_top_10) + geom_col(aes(x = term, y =count), fill = my_color[3]) + coord_flip() + labs(title = "Rappers' favourite Cars", x="",y ="")+ my_theme
 fig_car
 ```
-Benz is being mentioned the most times. In fact, many rappers also use Mercedes, which means Mercedes are mentioned far ahead the other cars. However, BMW, doesn't even enter the top ten. But there may be a reason for this, the pronunciation of BMW does not fit the melody of rap, the pronunciation of Benz sounds more rhyme, thus being mentioned more frequently. There are not so many luxury cars in the top ten. Off-road vehicles like dodge, jeep, hummer are more common, this also reflects the pursuit of freedom to some extent.
+
+Benz is being mentioned the most times. In fact, many rappers also use Mercedes, which means Mercedes are mentioned far ahead the other cars. However, BMW, doesn't even enter the top ten. But there may be a reason for this, the pronunciation of BMW does not fit the melody of rap, while Benz sounds more rhyme, thus being mentioned more frequently. There are not so many luxury cars in the top ten. Off-road vehicles like dodge, jeep, hummer are more common, this also reflects rappers' pursuit of freedom to some extent.
 
 ```{r,message=FALSE,warning=FALSE}
 wine <- c("martell","hennessy","remymartin","vodka","chivas","bacardi",
@@ -126,6 +129,7 @@ fig_wine <- ggplot(rap_wine_top_10) + geom_col(aes(x = term, y =count), fill = m
 fig_wine
 
 ```
+
 When it comes to wine, beer turns to be most frequently mentioned, next is champagne and gin. Rappers doesn't like whisky very much, but they like spirits like vodka. Champagne is often mentioned as a symbol of wealth.
 
 ```{r,message=FALSE,warning=FALSE}
@@ -139,10 +143,11 @@ rap_drug_top_10 <- rap_drug[1:10,] %>% mutate(term = fct_reorder(term, count))
 fig_drug <- ggplot(rap_drug_top_10) + geom_col(aes(x = term, y =count), fill = my_color[4]) + coord_flip()+ labs(title = "Rappers' favourite Drug", x="",y ="")+ my_theme
 fig_drug
 ```
-Since weed as well as marijuana and cannabis is legal in some states, it is reasonable to be mentioned most frequently. Cocaine is synonymous with traditional drugs, therefore it is understandable that it is often mentioned.
-What we need to be alert here is that some new drugs, molly has been mentioned most frequently followed by weed and cocaine. 
 
-Here, The reason we do data analysis on drugs is to remind people that there are some dark sides in hip-hop music. The lyrics are not excuses, we are always against violence and crime. Again, the core of the Hip-Hop music, is always peace and love.
+Since weed as well as marijuana and cannabis is legal in some states, it is reasonable to be mentioned most frequently. Cocaine is a synonymous with related to traditional drugs, therefore it is understandable why it is often mentioned.
+What we need to be alert here is that some new drugs, like molly, which has been mentioned most frequently followed by weed and cocaine. 
+
+Here, The reason we do data analysis on drugs is to remind people that there are some dark sides in hip-hop music. The genre od music are not excuses, we are always against violence and crime. Again, the core of the Hip-Hop music, is always peace and love.
 
 ## Part 4: Changing of the Hip-Hop over the years
 In this part, we will pay attention to the changes of hip hop music over time. Here we first count the changes in high-frequency words of hip-hop music in each era. Then we also counted the changes in the length of the lyrics of hip hop music in each era. These are mainly to prepare for the next part, sentiment analysis and topic modeling.
@@ -181,7 +186,7 @@ fig_wordlength <- beeswarm(wordlength~decade,
 By comparing the length of hip-hop lyrics in different decades, we did not find a big change pattern. However, we can still find that the millennium was the era of high-yielding hip-hop music, and the production of hip-hop music declined in the following decade.
 
 ## Part 5: Sentiment Analysis of Hip-Pop Music
-In this part, we applied sentiment analysis to solve second question: What emotions does Hip-Hop mainly express? We firstly perform sentiment analysis on all Hip-Hop music lyrics in the existing data, then clustered and visualized the analyzed data. Next we perform sentiment analysis on Hip-Hop songs of different decades to find the changes in the emotions of Hip-Hop music.
+In this part, we applied sentiment analysis to solve second question: What emotions do Hip-Hop mainly express? We firstly performed sentiment analysis on all Hip-Hop music lyrics in the existing data, then clustered and visualized the analyzed data. Next we performed sentiment analysis on Hip-Hop songs of different decades to find the changes in the emotions of Hip-Hop music.
 
 ```{r,message=FALSE,warning=FALSE}
 rap_full <- rap %>% filter(decade != "NA")
